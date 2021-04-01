@@ -7,32 +7,7 @@ The rules can be read at [Rules](https://en.wikipedia.org/wiki/Mastermind_(board
 
 ## How to use it
 
-The program will output a sequence, you will have to type two chars into it.
- - The number of BLACK pins
- - The number of WHITE pins
-
-ATTENTION : A pin at the correct position is always also a pin with the correct color. You cannot have less BLACK pins than WHITE pins!
-
-## Example
-If your secret config is `[1,2,3,4,5]`
-```
-[1,1,1,1,1]
-11
-[1,2,2,2,2]
-12
-[3,1,2,3,3]
-03
-[4,2,3,1,4]
-14
-[4,3,1,2,5]
-15
-[5,3,4,1,2]
-15
-[5,4,3,2,1]
-55
-[((5,5),[5,4,3,2,1])]
-```
-
+If your secret config is `[1,2,3,4,5]`, type `12345` after executing the program.
 
 ## How it Works
 The idea behind this implementation is the fact that if sequence A has the same number of B and W pins when compared to the sequence B and when the sequence B is compared to the secret sequence, then A does not violate any of the clue given by B.

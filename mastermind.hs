@@ -1,6 +1,8 @@
 import Control.Monad
 import Data.List
 
+data Record = Record { secret :: [Int], list :: [((Int,Int), [Int])] } deriving (Show)
+
 getBlackPins :: [Int] -> [Int] -> Int
 getBlackPins (a:as) (b:bs)
     | null as = compare
@@ -40,17 +42,20 @@ checkNewSeq a b
 readAsArray :: String -> [Int]
 readAsArray = map (\ x -> read [x] :: Int)
 
-playGame :: [((Int,Int),[Int])] -> IO()
+playGame :: Record -> IO()
 playGame a = do
-    let val = head [seq | seq <- generateSeq, checkNewSeq seq a]
+    let val = head [seq | seq <- generateSeq, checkNewSeq seq (list a)]
     print val
-    input <- getLine
+    let (bp, wp) = getComparison val (secret a)
+    print (bp, wp)
+    {- input <- getLine
     let arInput = readAsArray input
     let wp = arInput!!1
-    let bp = head arInput
-    let result = if bp < 5 then playGame (a ++ [((bp, wp), val)]) else print [((5,5),val)]
+    let bp = head arInput -}
+    let result = if bp < 5 then playGame ( Record (secret a) (list a ++ [((bp, wp), val)]) ) else print ( Record (secret a) [((5,5),val)] )
     result
 
 main :: IO ()
 main = do 
-    playGame [] 
+    input <- getLine
+    playGame (Record (readAsArray input) [])
