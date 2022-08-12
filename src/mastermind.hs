@@ -34,12 +34,11 @@ digits n = map (\x -> read [x] :: Int) (show n)
 
 generateSeq :: [[Int]]
 generateSeq =
-    [ [a, b, c, d, e]
+    [ [a, b, c, d]
     | a <- [1 .. 8]
     , b <- [1 .. 8]
     , c <- [1 .. 8]
     , d <- [1 .. 8]
-    , e <- [1 .. 8]
     ]
 
 checkNewSeqOldSeq :: [Int] -> ((Int, Int), [Int]) -> Int
@@ -53,10 +52,10 @@ checkNewSeq a b | null b    = True
 readAsArray :: String -> [Int]
 readAsArray = map (\x -> read [x] :: Int)
 
-playGame :: Record -> IO ()
+playGame :: Record -> Int
 playGame a = do
     let val = head [ seq | seq <- generateSeq, checkNewSeq seq (list a) ]
-    print val
+    {- print val -}
 
     {- Uncomment to let it determine the W and B pins itself -}
     let (bp, wp) = getComparison val (secret a)
@@ -67,14 +66,19 @@ playGame a = do
     let wp      = arInput !! 1
     let bp      = head arInput -}
 
-    print (bp, wp)
+    {- print (bp, wp) -}
 
-    let result = if bp < 5
+    let result = if bp < 4
             then playGame (Record (secret a) (list a ++ [((bp, wp), val)]))
-            else print (Record (secret a) [((5, 5), val)])
+            else length (list a) + 1 {- (Record (secret a) (list a ++ [((5, 5), val)])) -}
     result
+
+playAllGames :: [[Int]] -> [Int] -> [Int]
+playAllGames (p:ps) results
+    | null ps = results ++ [playGame (Record p [])]
+    | otherwise = playAllGames ps (results ++ [playGame (Record p [])])
 
 main :: IO ()
 main = do
-    input <- getLine
-    playGame (Record (readAsArray input) [])
+    let games = playAllGames (take 10000 generateSeq) []
+    print $ fromIntegral (sum games) / fromIntegral (length games)
